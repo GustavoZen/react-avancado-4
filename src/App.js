@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useCallback, useEffect, useMemo, useState, useRef} from 'react';
 
 function App() {
+  const [tarefas, setTarefas] = useState([]);
+  const [input, setInput] = useState('');
+  const hasLoaded = useRef(false);
+
+  useEffect(() => {
+    if (!hasLoaded.current) {
+      const tarefasStorage = localStorage.getItem('tarefas');
+      if(tarefasStorage) {
+        setTarefas(JSON.parse(tarefasStorage));
+      }
+      hasLoaded.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hasLoaded.current) {
+      localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    }
+  }, [tarefas]);
+
+  const handleAdd = useCallback(() => {
+    if(!input || input.trim() === '') return;
+    setTarefas(prevTarefas => [...prevTarefas, input]);
+    setInput('');
+  }, [input]);
+
+  const totalTarefas = useMemo(() => tarefas.length, [tarefas]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Lista de Tarefas</h1>
+      <ul>
+        {tarefas.map((tarefa, index) => 
+          <li key={index}>{index + 1}. {tarefa}</li>
+        )}
+      </ul>
+      <h3>Você tem um total de {totalTarefas} tarefas!</h3>
+      <input 
+        id="tarefaInput" 
+        type="text" 
+        value={input} 
+        onChange={e => setInput(e.target.value)}
+        onKeyPress={e => e.key === 'Enter' && handleAdd()}
+      />
+      <button onClick={handleAdd}>Adicionar</button>
     </div>
   );
 }
