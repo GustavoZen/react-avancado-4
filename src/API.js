@@ -28,6 +28,8 @@ function API() {
                     <article key={item.id} className="post">
                         <strong className="titulo">{item.titulo}</strong>
                         <img className="capa" src={item.capa}/>
+                        <p className="subtitulo">{item.subtitulo}</p>
+                        <div className="botao">Acessar</div>
                     </article>
                 )
             })}

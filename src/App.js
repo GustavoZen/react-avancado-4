@@ -54,6 +54,7 @@ function App() {
         onKeyPress={e => e.key === 'Enter' && handleAdd()}
       />
       <button onClick={handleAdd}>Adicionar</button>
+      <hr/>
       <API/>
     </div>
   );
